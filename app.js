@@ -1,81 +1,39 @@
-const express=require('express');
-const app=express();
-const productManager=require('./productDbManager');
-const log4js=require('log4js');
+const express = require('express');
+const app = express();
+
+const bodyParser = require('body-parser');
 
 
-log4js.configure({
-    appenders: { sampleRestApi: { type: "file", filename: "logpath\\sampleRestApi.log" } },
-    categories: { default: { appenders: ["sampleRestApi"], level: "all" } }
-  });
-
-const logger = log4js.getLogger("sampleRestApi");
+//services
+const productService=require('./product');
+const customerService = require('./customer');
+const userService=require('./user');
 
 
-app.get('/',defaultStartLink);
-app.get('/product',getProduct);
-app.post('/product',postProduct);
-app.delete('/product',deleteProduct);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-function defaultStartLink(req,res)
-{
+
+app.get('/', defaultStartLink);
+
+
+//Product Endpoints
+app.get('/product', productService.getProduct);
+app.post('/product', productService.postProduct);
+app.delete('/product', productService.deleteProduct);
+
+//Customer Endpoints
+app.get('/customer',customerService.getCustomer);
+app.post('/customer',customerService.postCustomer);
+app.delete('/customer',customerService.deleteCustomer);
+
+//User Endpoints
+app.get('/user',userService.getUser);
+app.post('/user',userService.postUser);
+app.delete('/user',userService.deleteUser);
+
+
+function defaultStartLink(req, res) {
     res.send("application is running");
 }
 
-function getProduct(req,res)
-{
-    logger.info("getProduct called");
-
-    var id=req.query.id;
-
-    try {
-
-        productManager.getProducts(id).then(result => {
-            res.send(result);
-        });
-        
-    } catch (error) {
-        logger.error("getProduct error :"+error);
-    }
-   
-    logger.info("getProduct completed");
-}
-
-function postProduct(req,res)
-{
-    logger.info("postProduct called");
-    var product={};
-
-    try {
-        
-        product=req.body.product;
-
-        if(product.id1=undefined)
-            productManager.updateProduct(product);
-        else
-            productManager.insertProduct(product);
-
-    } catch (error) {
-        logger.error("postProduct error :"+error);
-    }
-   
-    logger.info("postProduct completed");
-}
-
-function deleteProduct(req,res)
-{
-    logger.info("deleteProduct called");
-
-    try {
-        
-        var id=req.body.id;
-
-        if(id != undefined)
-            productManager.deleteProduct(id);
-
-    } catch (error) {
-        logger.error("deleteProduct error :"+error);
-    }
-
-    logger.info("deleteProduct completed");
-}

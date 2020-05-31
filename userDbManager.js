@@ -1,13 +1,12 @@
 var sql =require('mssql');
 var globalSettings=require('./globalSettings');
 
-exports.getProducts=getProducts;
-exports.updateProduct=updateProduct;
-exports.insertProduct=insertProduct;
-exports.deleteProduct=deleteProduct;
+exports.getUsers=getUsers;
+exports.updateUser=updateUser;
+exports.insertUser=insertUser;
+exports.deleteUser=deleteUser;
 
-
-function getProducts(id)
+function getUsers(id)
 {
     return new Promise ((resolve, reject) =>{
 
@@ -21,7 +20,7 @@ function getProducts(id)
                 return;
             }
              
-            req.query("SELECT * FROM Product",function(err, redocrset){
+            req.query("SELECT * FROM User",function(err, redocrset){
                 if(err)
                 {
                     console.log(err);  
@@ -41,7 +40,7 @@ function getProducts(id)
     });
 }
 
-function updateProduct(product)
+function updateUser(user)
 {
     var conn = new sql.ConnectionPool(globalSettings.dbconfig);
     var req = new sql.Request(conn);
@@ -53,7 +52,7 @@ function updateProduct(product)
             return;
         }
          
-        req.query("UPDATE Product SET ProductName='"+product.ProductName+"' WHERE ProductId="+product.Id,function(err, redocrset){
+        req.query("UPDATE User SET Username='"+user.Username+"' WHERE UserId="+user.Id,function(err, redocrset){
             if(err)
             {
                 console.log(err);
@@ -67,7 +66,7 @@ function updateProduct(product)
     });
 }
 
-function insertProduct(product)
+function insertUser(user)
 {
     var conn = new sql.ConnectionPool(globalSettings.dbconfig);
     var req = new sql.Request(conn);
@@ -79,7 +78,7 @@ function insertProduct(product)
             return;
         }
          
-        req.query("INSERT INTO Product(ProductName) VALUES ('"+product.ProductName+"') ",function(err, redocrset){
+        req.query("INSERT INTO User(Username) VALUES ('"+user.Username+"') ",function(err, redocrset){
             if(err)
             {
                  console.log(err);
@@ -93,8 +92,7 @@ function insertProduct(product)
     });
 }
 
-
-function deleteProduct(id)
+function deleteUser(id)
 {
     var conn = new sql.ConnectionPool(globalSettings.dbconfig);
     var req = new sql.Request(conn);
@@ -106,7 +104,7 @@ function deleteProduct(id)
             return;
         }
          
-        req.query("DELETE FROM Product WHERE ProductId ="+id,function(err, redocrset){
+        req.query("DELETE FROM User WHERE UserId ="+id,function(err, redocrset){
             if(err)
             {
                  console.log(err);
